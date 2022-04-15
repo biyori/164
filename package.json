@@ -1,0 +1,25 @@
+{
+  "devDependencies": {
+    "typescript": "^4.6.3"
+  },
+  "name": "164",
+  "version": "1.0.0",
+  "main": "puzzle.js",
+  "scripts": {
+    "start": "node ./dist/puzzle-8.js",
+    "start15": "node ./dist/puzzle-15.js",
+    "build": "npx tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/biyori/164.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/biyori/164/issues"
+  },
+  "homepage": "https://github.com/biyori/164#readme",
+  "description": ""
+}
