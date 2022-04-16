@@ -2,7 +2,7 @@ In this assignment you will explore State-Space Search with the 8-Puzzle and 15-
 
 You will need to implement and provide code for the following algorithms:
 
-    Breadth-First Search
+[x] Breadth-First Search
     Depth-First Search
     Iterative-Deepening Depth-First Search
     A* w/ Out-Of-Place, and Manhattan Distance Heuristics

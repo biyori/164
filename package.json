@@ -6,8 +6,7 @@
   "version": "1.0.0",
   "main": "puzzle.js",
   "scripts": {
-    "start": "node ./dist/puzzle-8.js",
-    "start15": "node ./dist/puzzle-15.js",
+    "start": "node ./dist/puzzle.js",
     "build": "npx tsc"
   },
   "repository": {
