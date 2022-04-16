@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const node_1 = require("./lib/node");
 const queue_1 = require("./lib/queue");
 const PUZZLE_DIMENSION = 3;
-const initialState = "123456078";
+const initialState = "160273485";
 const goalState = "123456780";
 const breadthFirstSearch = (initial, goal) => {
     const start_node = new node_1.node(initial.state, null, null, 0, 0);
@@ -18,8 +18,10 @@ const breadthFirstSearch = (initial, goal) => {
             reached.push(nodes);
             let children = expand(nodes);
             for (let i = 0; i < children.length; i++) {
-                if (children[i].state === goal.state)
+                if (children[i].state === goal.state) {
+                    console.log("SOLUTION: ", children[i].state);
                     return children[i];
+                }
                 let in_reached = reached.some((r) => r.state === children[i].state);
                 if (!in_reached) {
                     reached.push(children[i]);

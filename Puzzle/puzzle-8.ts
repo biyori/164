@@ -31,7 +31,7 @@ const PUZZLE_DIMENSION = 3; // 8 piece puzzle
 // 1 2 3
 // 4 5 6
 // 0 7 8
-const initialState = "123456078";
+const initialState = "160273485";
 
 // 1 2 3
 // 4 5 6
@@ -53,7 +53,11 @@ const breadthFirstSearch = (initial: state, goal: state) => {
       reached.push(nodes);
       let children = expand(nodes);
       for (let i = 0; i < children.length; i++) {
-        if (children[i].state === goal.state) return children[i]; // return the goal
+        if (children[i].state === goal.state) {
+          // return the goal
+          console.log("SOLUTION: ", children[i].state);
+          return children[i];
+        }
 
         // Check if the child node already exists in the reached list
         let in_reached = reached.some((r) => r.state === children[i].state);
@@ -134,8 +138,4 @@ function getNewStates(front_node: node, moves: moves[]): node[] {
   return new_states;
 }
 
-// let moves1 = getValidMoves(initialState);
-// let newStates = getNewStates(new node(initialState, null, null, 0, 0), moves1);
-// console.log(moves1);
-// console.log(newStates);
 let a = breadthFirstSearch({ state: initialState }, { state: goalState });
