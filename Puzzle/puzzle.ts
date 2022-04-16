@@ -2,10 +2,9 @@
 // State Space Search
 import { state } from "./lib/search";
 import { BFS } from "./lib/bfs";
+import { DFS } from "./lib/dfs";
 
 /*
-  Breadth-First Search
-  Depth-First Search
   Iterative-Deepening Depth-First Search
   A* w/ Out-Of-Place, and Manhattan Distance Heuristics
   Iterative Deepening A* w/ Out-Of-Place, and Manhattan Distance Heuristics
@@ -23,29 +22,27 @@ import { BFS } from "./lib/bfs";
   Produce output state from applying move sequence to initial state.
 */
 
-//const PUZZLE_DIMENSION = 3; // 8 piece puzzle
-const PUZZLE_DIMENSION = 4; // 15 piece puzzle
+const PUZZLE_DIMENSION = 3; // 8 piece puzzle
+//const PUZZLE_DIMENSION = 4; // 15 piece puzzle
 
 // 1 2 3
 // 4 5 6
 // 0 7 8
-const initialState: state = { state: "12345678D9CFEBA0" };
+const initialState: state = { state: "160273485" };
 
 // 1 2 3
 // 4 5 6
 // 7 8 0
-//const goalState = "123456780";
-const goalState: state = { state: "123456789ABCDEF0" }; // 15 piece puzzle
+const goalState: state = { state: "123456780" };
+//const goalState: state = { state: "123456789ABCDEF0" }; // 15 piece puzzle
 
-let bfs_config = {
-  initial: initialState,
-  goal: goalState,
-  dimension: PUZZLE_DIMENSION,
-  debug: false,
-};
-let a = new BFS(initialState, goalState, PUZZLE_DIMENSION, false);
-let searched = a.search();
-let a_parent = searched?.parent;
+// let bfs = new BFS(initialState, goalState, PUZZLE_DIMENSION, false);
+// let bfs_results = bfs.search();
+// let a_parent = bfs_results?.parent;
+
+let dfs = new BFS(initialState, goalState, PUZZLE_DIMENSION, false);
+let dfs_result = dfs.search();
+let a_parent = dfs_result?.parent;
 let solution_actions = "";
 while (a_parent != null) {
   if (a_parent.move?.length) {
@@ -53,4 +50,4 @@ while (a_parent != null) {
   }
   a_parent = a_parent.parent;
 }
-console.log(`Solution for [${initialState}] => ${solution_actions}`);
+console.log(`Solution for [${initialState.state}] => ${solution_actions}`);

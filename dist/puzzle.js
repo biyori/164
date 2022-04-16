@@ -1,18 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const bfs_1 = require("./lib/bfs");
-const PUZZLE_DIMENSION = 4;
-const initialState = { state: "12345678D9CFEBA0" };
-const goalState = { state: "123456789ABCDEF0" };
-let bfs_config = {
-    initial: initialState,
-    goal: goalState,
-    dimension: PUZZLE_DIMENSION,
-    debug: false,
-};
-let a = new bfs_1.BFS(initialState, goalState, PUZZLE_DIMENSION, false);
-let searched = a.search();
-let a_parent = searched?.parent;
+const PUZZLE_DIMENSION = 3;
+const initialState = { state: "160273485" };
+const goalState = { state: "123456780" };
+let dfs = new bfs_1.BFS(initialState, goalState, PUZZLE_DIMENSION, false);
+let dfs_result = dfs.search();
+let a_parent = dfs_result?.parent;
 let solution_actions = "";
 while (a_parent != null) {
     if (a_parent.move?.length) {
@@ -20,4 +14,4 @@ while (a_parent != null) {
     }
     a_parent = a_parent.parent;
 }
-console.log(`Solution for [${initialState}] => ${solution_actions}`);
+console.log(`Solution for [${initialState.state}] => ${solution_actions}`);
