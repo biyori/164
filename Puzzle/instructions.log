@@ -11,7 +11,8 @@ You will need to implement and provide code for the following algorithms:
 Develop search code with requirements:
 
     Input puzzle as a two strings, initial state and goal state.
-    Produce the solution as a string of "udlr" representing the move "up", "down", "left", and "right" for the movement of the blank.
+    Produce the solution as a string of "udlr" representing the move "up", "down", "left", and "right" 
+    for the movement of the blank.
     Produce the number of expanded nodes required to find solution.
 
 In addition, develop code to test a solution with requirements:

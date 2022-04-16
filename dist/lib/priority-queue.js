@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.PriorityQueue = void 0;
 class PriorityQueue {
     items;
     constructor() {
@@ -27,4 +28,4 @@ class PriorityQueue {
             console.log(this.items[i].priority);
     }
 }
-exports.default = PriorityQueue;
+exports.PriorityQueue = PriorityQueue;

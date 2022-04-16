@@ -1,4 +1,4 @@
-export default class PriorityQueue {
+export class PriorityQueue {
   items: QueueItem[];
   /**
    * Priority queue
