@@ -1,46 +1,54 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BFS = void 0;
+exports.IterDFS = void 0;
 const node_1 = require("./node");
-const queue_1 = require("./queue");
-class BFS {
+class IterDFS {
     initial;
     goal;
     dimension;
     debug;
-    constructor(initial, goal, dimension, debug) {
+    maxDepth;
+    constructor(initial, goal, dimension, debug, maxDepth) {
         this.initial = initial;
         this.goal = goal;
         this.dimension = dimension;
         this.debug = debug;
+        this.maxDepth = maxDepth;
     }
     search = () => {
+        for (let i = 0; i < 1_000_000; i++) {
+            const result = this.depthLimitedSearch(this.initial, i);
+            if (result != null)
+                return result;
+            console.log("round ", i);
+        }
+        return null;
+    };
+    depthLimitedSearch = (problem, limit) => {
         const start_node = new node_1.node(this.initial.state, null, null, 0, 0);
-        if (this.initial.state == this.goal.state)
-            return start_node;
-        let frontier = new queue_1.Queue();
-        frontier.push(start_node);
-        let reached = [];
-        while (!frontier.empty()) {
-            let nodes = frontier.pop();
-            if (nodes != null) {
-                reached.push(nodes);
-                let children = this.expand(nodes);
-                for (let i = 0; i < children.length; i++) {
-                    if (children[i].state === this.goal.state) {
-                        console.log("SOLUTION: ", children[i].state);
-                        return children[i];
-                    }
-                    let in_reached = reached.some((r) => r.state === children[i].state);
-                    if (!in_reached) {
-                        reached.push(children[i]);
-                        frontier.push(children[i]);
-                    }
-                }
+        return this.recursiveDLS(start_node, problem, limit);
+    };
+    recursiveDLS = (succ, problem, limit) => {
+        let cutoff_occurred = false;
+        if (succ.state == this.goal.state)
+            return succ;
+        else if (succ.depth === limit) {
+            return null;
+        }
+        else {
+            let successor = this.expand(succ);
+            for (let i = 0; i < successor.length; i++) {
+                let result = this.recursiveDLS(successor[i], problem, limit);
+                if (result == null)
+                    cutoff_occurred = true;
+                else if (result)
+                    return result;
             }
         }
-        console.error("No solution was found");
-        return null;
+        if (cutoff_occurred) {
+            return null;
+        }
+        throw new Error("Failure during iterative deepening DFS");
     };
     expand = (node) => {
         let children = [];
@@ -99,4 +107,4 @@ class BFS {
         return new_states;
     }
 }
-exports.BFS = BFS;
+exports.IterDFS = IterDFS;

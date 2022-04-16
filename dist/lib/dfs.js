@@ -39,6 +39,7 @@ class DFS {
             }
         }
         console.error("No solution was found");
+        return null;
     };
     expand = (node) => {
         let children = [];
@@ -88,7 +89,7 @@ class DFS {
                 state_copy[moves[i].index] = "0";
                 if (this.debug) {
                     console.log(state_copy);
-                    console.log(state_copy.join(""));
+                    console.log(state_copy.join(""), "[Depth]", front_node.depth);
                 }
                 let child = new node_1.node(state_copy.join(""), front_node, moves[i].move, front_node.depth + 1, front_node.cost + 1);
                 new_states.push(child);

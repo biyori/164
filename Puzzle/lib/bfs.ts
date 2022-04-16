@@ -2,6 +2,7 @@ import { node } from "./node";
 import { Queue } from "./queue";
 import { moves, state } from "./search";
 
+// Breadth-First Search
 export class BFS {
   initial: state;
   goal: state;
@@ -14,7 +15,7 @@ export class BFS {
     this.debug = debug;
   }
 
-  search = (): node | undefined => {
+  search = (): node | null => {
     const start_node = new node(this.initial.state, null, null, 0, 0);
 
     if (this.initial.state == this.goal.state) return start_node;
@@ -44,6 +45,7 @@ export class BFS {
       }
     }
     console.error("No solution was found");
+    return null;
   };
 
   expand = (node: node): node[] => {
@@ -99,7 +101,7 @@ export class BFS {
         state_copy[moves[i].index] = "0";
         if (this.debug) {
           console.log(state_copy);
-          console.log(state_copy.join(""));
+          console.log(state_copy.join(""), "[Depth]", front_node.depth);
         }
         let child = new node(
           state_copy.join(""),

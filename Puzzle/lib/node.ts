@@ -4,8 +4,9 @@ export class node {
   move: string | null;
   depth: number;
   cost: number;
+
   /**
-   * Puzzle nodes
+   * A node object for the tile solvers
    */
   constructor(
     state: string,

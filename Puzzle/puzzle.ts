@@ -3,6 +3,8 @@
 import { state } from "./lib/search";
 import { BFS } from "./lib/bfs";
 import { DFS } from "./lib/dfs";
+import { moves } from "./lib/moves";
+import { IterDFS } from "./lib/iter-dfs";
 
 /*
   Iterative-Deepening Depth-First Search
@@ -27,7 +29,7 @@ const PUZZLE_DIMENSION = 3; // 8 piece puzzle
 
 // 1 2 3
 // 4 5 6
-// 0 7 8
+// 0 8 7
 const initialState: state = { state: "160273485" };
 
 // 1 2 3
@@ -41,13 +43,7 @@ const goalState: state = { state: "123456780" };
 // let a_parent = bfs_results?.parent;
 
 let dfs = new BFS(initialState, goalState, PUZZLE_DIMENSION, false);
-let dfs_result = dfs.search();
-let a_parent = dfs_result?.parent;
-let solution_actions = "";
-while (a_parent != null) {
-  if (a_parent.move?.length) {
-    solution_actions += a_parent.move;
-  }
-  a_parent = a_parent.parent;
-}
-console.log(`Solution for [${initialState.state}] => ${solution_actions}`);
+let result = dfs.search();
+
+let mv = new moves(result);
+console.log(`Solution for [${initialState.state}] => ${mv.getMoves()}`);

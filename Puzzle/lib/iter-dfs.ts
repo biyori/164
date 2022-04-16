@@ -1,50 +1,63 @@
 import { node } from "./node";
 import { moves, state } from "./search";
 
-// Depth-First Search
-export class DFS {
+// Iterative-Deepening Depth-First Search
+export class IterDFS {
   initial: state;
   goal: state;
   dimension: number;
   debug: boolean;
-  constructor(initial: state, goal: state, dimension: number, debug: boolean) {
+  maxDepth: number;
+  constructor(
+    initial: state,
+    goal: state,
+    dimension: number,
+    debug: boolean,
+    maxDepth: number
+  ) {
     this.initial = initial;
     this.goal = goal;
     this.dimension = dimension;
     this.debug = debug;
+    this.maxDepth = maxDepth;
   }
 
   search = (): node | null => {
+    for (let i = 0; i < 1_000_000; i++) {
+      const result = this.depthLimitedSearch(this.initial, i);
+      if (result != null) return result;
+      console.log("round ", i);
+    }
+    return null;
+  };
+
+  depthLimitedSearch = (problem: state, limit: number): node | null => {
     const start_node = new node(this.initial.state, null, null, 0, 0);
+    return this.recursiveDLS(start_node, problem, limit);
+  };
 
-    if (this.initial.state == this.goal.state) return start_node;
-    let frontier: node[] = [];
-    frontier.push(start_node);
-    let reached: node[] = [];
-    while (frontier.length != 0) {
-      let nodes = frontier.pop();
-      if (nodes != null) {
-        reached.push(nodes);
-        let children = this.expand(nodes);
-        for (let i = 0; i < children.length; i++) {
-          if (children[i].state === this.goal.state) {
-            // return the goal
-            console.log("SOLUTION: ", children[i].state);
-            return children[i];
-          }
-
-          // Check if the child node already exists in the reached list
-          let in_reached = reached.some((r) => r.state === children[i].state);
-          // If the node is not in reached explore
-          if (!in_reached) {
-            reached.push(children[i]);
-            frontier.push(children[i]);
-          }
-        }
+  private recursiveDLS = (
+    succ: node,
+    problem: state,
+    limit: number
+  ): node | null => {
+    let cutoff_occurred = false;
+    if (succ.state == this.goal.state) return succ;
+    else if (succ.depth === limit) {
+      // cutoff
+      return null;
+    } else {
+      let successor = this.expand(succ);
+      for (let i = 0; i < successor.length; i++) {
+        let result = this.recursiveDLS(successor[i], problem, limit);
+        if (result == null) cutoff_occurred = true;
+        else if (result) return result;
       }
     }
-    console.error("No solution was found");
-    return null;
+    if (cutoff_occurred) {
+      return null;
+    }
+    throw new Error("Failure during iterative deepening DFS");
   };
 
   expand = (node: node): node[] => {
