@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BFS = void 0;
+exports.AyyStar = void 0;
 const node_1 = require("./node");
-const queue_1 = require("./queue");
-class BFS {
+const priority_queue_1 = require("./priority-queue");
+class AyyStar {
     initial;
     goal;
     dimension;
@@ -16,25 +16,25 @@ class BFS {
     }
     search = () => {
         const start_node = new node_1.node(this.initial.state, null, null, 0, 0);
-        if (this.initial.state == this.goal.state)
-            return start_node;
-        let frontier = new queue_1.Queue();
-        frontier.push(start_node);
+        let frontier = new priority_queue_1.PriorityQueue();
+        frontier.enqueue({ item: start_node, priority: start_node.cost });
         let reached = [];
+        reached.push(start_node);
         while (!frontier.empty()) {
-            let nodes = frontier.pop();
-            if (nodes != null) {
-                reached.push(nodes);
-                let children = this.expand(nodes);
+            let nodes = frontier.dequeue();
+            if (nodes?.item != null) {
+                if (nodes.item.state == this.goal.state)
+                    return nodes.item;
+                let children = this.expand(nodes.item);
                 for (let i = 0; i < children.length; i++) {
-                    if (children[i].state === this.goal.state) {
-                        console.log("SOLUTION: ", children[i].state);
-                        return children[i];
-                    }
-                    let in_reached = reached.some((r) => r.state === children[i].state);
+                    let child = children[i];
+                    let in_reached = reached.some((r) => r.state === child.state);
                     if (!in_reached) {
-                        reached.push(children[i]);
-                        frontier.push(children[i]);
+                        reached.push(child);
+                        frontier.enqueue({
+                            item: child,
+                            priority: child.cost + (child.parent?.cost ?? 0),
+                        });
                     }
                 }
             }
@@ -86,15 +86,49 @@ class BFS {
                 let tileToMove = state_copy[moves[i].index];
                 state_copy[zeroTileIndex] = tileToMove;
                 state_copy[moves[i].index] = "0";
+                let outOfPlaceTiles = this.outOfPlace({ state: state_copy.join("") });
+                let manhattanDistance = this.ManhattanDistance({
+                    state: state_copy.join(""),
+                });
                 if (this.debug) {
                     console.log(state_copy);
                     console.log(state_copy.join(""), "[Depth]", front_node.depth);
+                    console.log("Out of place tiles:", outOfPlaceTiles);
+                    console.log("Manhattan distance", manhattanDistance);
                 }
-                let child = new node_1.node(state_copy.join(""), front_node, moves[i].move, front_node.depth + 1, front_node.cost + 1);
+                let child = new node_1.node(state_copy.join(""), front_node, moves[i].move, front_node.depth + 1, front_node.cost + outOfPlaceTiles + manhattanDistance);
                 new_states.push(child);
             }
         }
         return new_states;
     }
+    outOfPlace(node_state) {
+        let goal = this.goal.state;
+        let check = node_state.state;
+        let state_length = check.length;
+        let out_of_place = 0;
+        for (let i = 0; i < state_length; i++) {
+            if (check[i] === goal[i] && goal[i] != "0")
+                continue;
+            out_of_place++;
+        }
+        return out_of_place;
+    }
+    SingleTileManhattanDistance(tile_index, node_state) {
+        let initial_state = node_state.state.indexOf(tile_index.toString());
+        let goal_state = this.goal.state.indexOf(tile_index.toString());
+        let dist = Math.abs(Math.floor(initial_state / this.dimension) -
+            Math.floor(goal_state / this.dimension)) +
+            Math.abs((initial_state % this.dimension) - (goal_state % this.dimension));
+        return dist;
+    }
+    ManhattanDistance(node_state) {
+        let lent = node_state.state.length;
+        let sum = 0;
+        for (let i = 1; i < lent; i++) {
+            sum += this.SingleTileManhattanDistance(i, node_state);
+        }
+        return sum;
+    }
 }
-exports.BFS = BFS;
+exports.AyyStar = AyyStar;

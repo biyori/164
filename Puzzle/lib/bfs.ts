@@ -49,8 +49,6 @@ export class BFS {
   };
 
   expand = (node: node): node[] => {
-    let children = [];
-    children.push(node);
     let valid_moves = this.getValidMoves(node.state);
     let newStates = this.getNewStates(node, valid_moves);
     return newStates;

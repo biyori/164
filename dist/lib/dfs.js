@@ -24,6 +24,7 @@ class DFS {
             let nodes = frontier.pop();
             if (nodes != null) {
                 reached.push(nodes);
+                console.log(nodes.cost);
                 let children = this.expand(nodes);
                 for (let i = 0; i < children.length; i++) {
                     if (children[i].state === this.goal.state) {
@@ -42,8 +43,6 @@ class DFS {
         return null;
     };
     expand = (node) => {
-        let children = [];
-        children.push(node);
         let valid_moves = this.getValidMoves(node.state);
         let newStates = this.getNewStates(node, valid_moves);
         return newStates;

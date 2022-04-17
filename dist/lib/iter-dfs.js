@@ -25,7 +25,7 @@ class IterDFS {
         return null;
     };
     depthLimitedSearch = (problem, limit) => {
-        const start_node = new node_1.node(this.initial.state, null, null, 0, 0);
+        const start_node = new node_1.node(problem.state, null, null, 0, 0);
         return this.recursiveDLS(start_node, problem, limit);
     };
     recursiveDLS = (succ, problem, limit) => {
@@ -51,8 +51,6 @@ class IterDFS {
         throw new Error("Failure during iterative deepening DFS");
     };
     expand = (node) => {
-        let children = [];
-        children.push(node);
         let valid_moves = this.getValidMoves(node.state);
         let newStates = this.getNewStates(node, valid_moves);
         return newStates;

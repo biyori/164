@@ -22,6 +22,10 @@ class PriorityQueue {
     dequeue() {
         if (this.items.length > 0)
             return this.items.shift();
+        return undefined;
+    }
+    empty() {
+        return this.items.length === 0;
     }
     print() {
         for (let i = 0; i < this.items.length; i++)

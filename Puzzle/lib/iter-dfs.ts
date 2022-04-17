@@ -32,7 +32,7 @@ export class IterDFS {
   };
 
   depthLimitedSearch = (problem: state, limit: number): node | null => {
-    const start_node = new node(this.initial.state, null, null, 0, 0);
+    const start_node = new node(problem.state, null, null, 0, 0);
     return this.recursiveDLS(start_node, problem, limit);
   };
 
@@ -61,8 +61,6 @@ export class IterDFS {
   };
 
   expand = (node: node): node[] => {
-    let children = [];
-    children.push(node);
     let valid_moves = this.getValidMoves(node.state);
     let newStates = this.getNewStates(node, valid_moves);
     return newStates;

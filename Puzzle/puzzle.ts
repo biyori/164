@@ -1,14 +1,8 @@
-// https://colab.research.google.com/drive/1zT2ZYm1yky7ql1Zk5pIEwclubGZGd7Oi?authuser=1
-// State Space Search
 import { state } from "./lib/search";
-import { BFS } from "./lib/bfs";
-import { DFS } from "./lib/dfs";
+import { AyyStar } from "./lib/ayy-star";
 import { moves } from "./lib/moves";
-import { IterDFS } from "./lib/iter-dfs";
 
 /*
-  Iterative-Deepening Depth-First Search
-  A* w/ Out-Of-Place, and Manhattan Distance Heuristics
   Iterative Deepening A* w/ Out-Of-Place, and Manhattan Distance Heuristics
 
   Develop search code with requirements:
@@ -24,26 +18,92 @@ import { IterDFS } from "./lib/iter-dfs";
   Produce output state from applying move sequence to initial state.
 */
 
-const PUZZLE_DIMENSION = 3; // 8 piece puzzle
-//const PUZZLE_DIMENSION = 4; // 15 piece puzzle
+// Tested only for 3x3 and 4x4 puzzles
+// 3x3 = 8 piece
+// 4x4 = 15 piece
+const PUZZLE_DIMENSION = 4;
 
-// 1 2 3
-// 4 5 6
-// 0 8 7
-const initialState: state = { state: "160273485" };
-
+// 3x3
 // 1 2 3
 // 4 5 6
 // 7 8 0
-const goalState: state = { state: "123456780" };
-//const goalState: state = { state: "123456789ABCDEF0" }; // 15 piece puzzle
+const goalState_3x3: state = { state: "123456780" };
+const initialState_3x3: state[] = [
+  { state: "160273485" },
+  { state: "462301587" },
+  { state: "821574360" },
+  { state: "840156372" },
+  { state: "530478126" },
+  { state: "068314257" },
+  { state: "453207186" },
+  { state: "128307645" },
+  { state: "035684712" },
+  { state: "684317025" },
+  { state: "028514637" },
+  { state: "618273540" },
+  { state: "042385671" },
+  { state: "420385716" },
+  { state: "054672813" },
+  { state: "314572680" },
+  { state: "637218045" },
+  { state: "430621875" },
+  { state: "158274036" },
+  { state: "130458726" },
+];
 
-// let bfs = new BFS(initialState, goalState, PUZZLE_DIMENSION, false);
-// let bfs_results = bfs.search();
-// let a_parent = bfs_results?.parent;
+// 4x4
+// 1 2 3 4
+// 5 6 7 8
+// 9 A B C
+// D E F 0
+const goalState4x4: state = { state: "123456789ABCDEF0" };
+const initialState_4x4: state[] = [
+  { state: "16235A749C08DEBF" }, // Easy
+  { state: "0634217859ABDEFC" }, //
+  { state: "012456379BC8DAEF" }, //
+  { state: "51246A38097BDEFC" }, //
+  { state: "12345678D9CFEBA0" }, //
+  { state: "71A92CE03DB4658F" }, // Hard
+  { state: "02348697DF5A1EBC" }, //
+  { state: "39A1D0EC7BF86452" }, //
+  { state: "EAB480FC19D56237" }, //
+  { state: "7DB13C52F46E80A9" }, //
+];
 
-let dfs = new BFS(initialState, goalState, PUZZLE_DIMENSION, false);
-let result = dfs.search();
+//Solve all the 3rd dimension states
+for (let i = 0; i < initialState_3x3.length; i++) {
+  let ayy = new AyyStar(
+    initialState_3x3[i],
+    goalState_3x3,
+    PUZZLE_DIMENSION > 3 ? 3 : 3,
+    false
+  );
+  let result = ayy.search();
+  let mv = new moves(result);
+  console.log(
+    `[${i + 1}/${initialState_3x3.length}] Solution for [${
+      initialState_3x3[i].state
+    }] => ${mv.getMoves()}`
+  );
+}
 
-let mv = new moves(result);
-console.log(`Solution for [${initialState.state}] => ${mv.getMoves()}`);
+// Solve all the 4th dimension states
+if (PUZZLE_DIMENSION > 3) {
+  for (let i = 0; i < initialState_4x4.length; i++) {
+    let ayy = new AyyStar(
+      initialState_4x4[i],
+      goalState4x4,
+      PUZZLE_DIMENSION,
+      false
+    );
+
+    let result = ayy.search();
+    let mv = new moves(result);
+
+    console.log(
+      `[${i + 1}/${initialState_4x4.length}] Solution for [${
+        initialState_4x4[i].state
+      }] => ${mv.getMoves()}`
+    );
+  }
+}

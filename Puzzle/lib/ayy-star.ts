@@ -1,8 +1,9 @@
 import { node } from "./node";
+import { PriorityQueue } from "./priority-queue";
 import { moves, state } from "./search";
 
-// Depth-First Search
-export class DFS {
+// Breadth-First Search
+export class AyyStar {
   initial: state;
   goal: state;
   dimension: number;
@@ -17,29 +18,33 @@ export class DFS {
   search = (): node | null => {
     const start_node = new node(this.initial.state, null, null, 0, 0);
 
-    if (this.initial.state == this.goal.state) return start_node;
-    let frontier: node[] = [];
-    frontier.push(start_node);
+    let frontier: PriorityQueue = new PriorityQueue();
+    frontier.enqueue({ item: start_node, priority: start_node.cost });
     let reached: node[] = [];
-    while (frontier.length != 0) {
-      let nodes = frontier.pop();
-      if (nodes != null) {
-        reached.push(nodes);
-        console.log(nodes.cost);
-        let children = this.expand(nodes);
+    reached.push(start_node);
+    while (!frontier.empty()) {
+      let nodes = frontier.dequeue();
+      if (nodes?.item != null) {
+        if (nodes.item.state == this.goal.state) return nodes.item;
+
+        let children = this.expand(nodes.item);
         for (let i = 0; i < children.length; i++) {
-          if (children[i].state === this.goal.state) {
-            // return the goal
-            console.log("SOLUTION: ", children[i].state);
-            return children[i];
-          }
+          let child = children[i];
 
           // Check if the child node already exists in the reached list
-          let in_reached = reached.some((r) => r.state === children[i].state);
+          let in_reached = reached.some((r) => r.state === child.state);
+
+          // Sum the cost of each node
+          //let reach_cost = reached.filter((n) => n.state === child.state);
+          //let sum = reach_cost.reduce((sum, f) => sum + f.cost, 0);
+
           // If the node is not in reached explore
           if (!in_reached) {
-            reached.push(children[i]);
-            frontier.push(children[i]);
+            reached.push(child);
+            frontier.enqueue({
+              item: child,
+              priority: child.cost + (child.parent?.cost ?? 0),
+            });
           }
         }
       }
@@ -97,20 +102,74 @@ export class DFS {
         let tileToMove = state_copy[moves[i].index]; // tile to move
         state_copy[zeroTileIndex] = tileToMove;
         state_copy[moves[i].index] = "0";
+
+        let outOfPlaceTiles = this.outOfPlace({ state: state_copy.join("") });
+        let manhattanDistance = this.ManhattanDistance({
+          state: state_copy.join(""),
+        });
         if (this.debug) {
           console.log(state_copy);
           console.log(state_copy.join(""), "[Depth]", front_node.depth);
+          console.log("Out of place tiles:", outOfPlaceTiles);
+          console.log("Manhattan distance", manhattanDistance);
         }
         let child = new node(
           state_copy.join(""),
           front_node,
           moves[i].move,
           front_node.depth + 1,
-          front_node.cost + 1
+          front_node.cost + outOfPlaceTiles + manhattanDistance // Add weight to the priority queue
         );
         new_states.push(child);
       }
     }
     return new_states;
+  }
+
+  /**
+   * Out of Place
+   * @param node_state
+   * @returns number of tiles out of place of the goal state
+   */
+  outOfPlace(node_state: state): number {
+    let goal = this.goal.state;
+    let check = node_state.state;
+    let state_length = check.length;
+    let out_of_place = 0;
+    for (let i = 0; i < state_length; i++) {
+      if (check[i] === goal[i] && goal[i] != "0") continue;
+      out_of_place++;
+    }
+    return out_of_place;
+  }
+
+  SingleTileManhattanDistance(tile_index: number, node_state: state): number {
+    let initial_state: number = node_state.state.indexOf(tile_index.toString());
+    let goal_state: number = this.goal.state.indexOf(tile_index.toString());
+    let dist =
+      Math.abs(
+        Math.floor(initial_state / this.dimension) -
+          Math.floor(goal_state / this.dimension)
+      ) +
+      Math.abs(
+        (initial_state % this.dimension) - (goal_state % this.dimension)
+      );
+    // console.log("Comparing", initial_state, goal_state, dist);
+    return dist;
+  }
+
+  /**
+   * Manhattan Distance
+   * @param node_state
+   * @returns Manhattan distance of the current state of the tiles
+   */
+  ManhattanDistance(node_state: state) {
+    let lent = node_state.state.length;
+    let sum = 0;
+    // Start at 1 to ignore the index of "0"
+    for (let i = 1; i < lent; i++) {
+      sum += this.SingleTileManhattanDistance(i, node_state);
+    }
+    return sum;
   }
 }

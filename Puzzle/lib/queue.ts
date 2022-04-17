@@ -14,6 +14,7 @@ export class Queue<T> {
   pop(): T | undefined {
     // Return the front element
     if (this.items.length > 0) return this.items.shift();
+    return undefined;
   }
 
   empty(): boolean {

@@ -1,5 +1,7 @@
+import { node } from "./node";
+
 export class PriorityQueue {
-  items: QueueItem[];
+  items: pNode[];
   /**
    * Priority queue
    */
@@ -7,7 +9,7 @@ export class PriorityQueue {
     this.items = [];
   }
 
-  enqueue(item: QueueItem): void {
+  enqueue(item: pNode): void {
     let contain = false;
 
     // iterating through the entire
@@ -27,9 +29,14 @@ export class PriorityQueue {
     }
   }
 
-  dequeue(): QueueItem | undefined {
+  dequeue(): pNode | undefined {
     // Return the front element
     if (this.items.length > 0) return this.items.shift();
+    return undefined;
+  }
+
+  empty(): boolean {
+    return this.items.length === 0;
   }
 
   print(): void {
@@ -38,7 +45,7 @@ export class PriorityQueue {
   }
 }
 
-export interface QueueItem {
-  itemData: any;
+export interface pNode {
+  item: node;
   priority: number;
 }
