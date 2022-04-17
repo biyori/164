@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const ayy_star_1 = require("./lib/ayy-star");
 const moves_1 = require("./lib/moves");
-const PUZZLE_DIMENSION = 4;
+const SOLVE_PUZZLE_DIMENSION = 4;
 const goalState_3x3 = { state: "123456780" };
 const initialState_3x3 = [
     { state: "160273485" },
@@ -40,14 +40,14 @@ const initialState_4x4 = [
     { state: "7DB13C52F46E80A9" },
 ];
 for (let i = 0; i < initialState_3x3.length; i++) {
-    let ayy = new ayy_star_1.AyyStar(initialState_3x3[i], goalState_3x3, PUZZLE_DIMENSION > 3 ? 3 : 3, false);
+    let ayy = new ayy_star_1.AyyStar(initialState_3x3[i], goalState_3x3, 3, false);
     let result = ayy.search();
     let mv = new moves_1.moves(result);
     console.log(`[${i + 1}/${initialState_3x3.length}] Solution for [${initialState_3x3[i].state}] => ${mv.getMoves()}`);
 }
-if (PUZZLE_DIMENSION > 3) {
+if (SOLVE_PUZZLE_DIMENSION > 3) {
     for (let i = 0; i < initialState_4x4.length; i++) {
-        let ayy = new ayy_star_1.AyyStar(initialState_4x4[i], goalState4x4, PUZZLE_DIMENSION, false);
+        let ayy = new ayy_star_1.AyyStar(initialState_4x4[i], goalState4x4, 4, false);
         let result = ayy.search();
         let mv = new moves_1.moves(result);
         console.log(`[${i + 1}/${initialState_4x4.length}] Solution for [${initialState_4x4[i].state}] => ${mv.getMoves()}`);

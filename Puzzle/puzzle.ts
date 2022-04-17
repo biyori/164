@@ -21,7 +21,7 @@ import { moves } from "./lib/moves";
 // Tested only for 3x3 and 4x4 puzzles
 // 3x3 = 8 piece
 // 4x4 = 15 piece
-const PUZZLE_DIMENSION = 4;
+const SOLVE_PUZZLE_DIMENSION = 4; // solves 4x4 and 3x3
 
 // 3x3
 // 1 2 3
@@ -70,14 +70,9 @@ const initialState_4x4: state[] = [
   { state: "7DB13C52F46E80A9" }, //
 ];
 
-//Solve all the 3rd dimension states
+// Solve the 3x3 puzzle states
 for (let i = 0; i < initialState_3x3.length; i++) {
-  let ayy = new AyyStar(
-    initialState_3x3[i],
-    goalState_3x3,
-    PUZZLE_DIMENSION > 3 ? 3 : 3,
-    false
-  );
+  let ayy = new AyyStar(initialState_3x3[i], goalState_3x3, 3, false);
   let result = ayy.search();
   let mv = new moves(result);
   console.log(
@@ -87,19 +82,12 @@ for (let i = 0; i < initialState_3x3.length; i++) {
   );
 }
 
-// Solve all the 4th dimension states
-if (PUZZLE_DIMENSION > 3) {
+// Solve the 4x4 puzzle states
+if (SOLVE_PUZZLE_DIMENSION > 3) {
   for (let i = 0; i < initialState_4x4.length; i++) {
-    let ayy = new AyyStar(
-      initialState_4x4[i],
-      goalState4x4,
-      PUZZLE_DIMENSION,
-      false
-    );
-
+    let ayy = new AyyStar(initialState_4x4[i], goalState4x4, 4, false);
     let result = ayy.search();
     let mv = new moves(result);
-
     console.log(
       `[${i + 1}/${initialState_4x4.length}] Solution for [${
         initialState_4x4[i].state
