@@ -1,6 +1,7 @@
 import { state } from "./lib/search";
 import { AyyStar } from "./lib/ayy-star";
 import { moves } from "./lib/moves";
+import { benchmark } from "./lib/benchmark";
 
 /*
   Iterative Deepening A* w/ Out-Of-Place, and Manhattan Distance Heuristics
@@ -69,7 +70,8 @@ const initialState_4x4: state[] = [
   { state: "EAB480FC19D56237" }, //
   { state: "7DB13C52F46E80A9" }, //
 ];
-
+let bench = new benchmark();
+bench.start();
 // Solve the 3x3 puzzle states
 for (let i = 0; i < initialState_3x3.length; i++) {
   let ayy = new AyyStar(initialState_3x3[i], goalState_3x3, 3, false);
@@ -81,6 +83,7 @@ for (let i = 0; i < initialState_3x3.length; i++) {
     }] => ${mv.getMoves()}`
   );
 }
+console.log("Benchmark: ", bench.stop());
 
 // Solve the 4x4 puzzle states
 if (SOLVE_PUZZLE_DIMENSION > 3) {

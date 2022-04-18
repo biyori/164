@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AyyStar = void 0;
+exports.IterAyyStar = void 0;
 const node_1 = require("./node");
-const priority_queue_1 = require("./priority-queue");
-class AyyStar {
+class IterAyyStar {
     initial;
     goal;
     dimension;
@@ -15,33 +14,41 @@ class AyyStar {
         this.debug = debug;
     }
     search = () => {
-        const start_node = new node_1.node(this.initial.state, null, null, 0, 0);
-        let frontier = new priority_queue_1.PriorityQueue();
-        frontier.heapPush({ item: start_node, priority: start_node.cost });
-        let reached = [];
-        reached.push(start_node.state);
-        while (!frontier.empty()) {
-            let nodes = frontier.heapPop();
-            if (nodes?.item != null) {
-                if (nodes.item.state == this.goal.state) {
-                    return nodes.item;
-                }
-                let children = this.expand(nodes.item);
-                for (let i = 0; i < children.length; i++) {
-                    let child = children[i];
-                    let in_reached = reached.includes(child.state);
-                    if (!in_reached) {
-                        reached.push(child.state);
-                        frontier.heapPush({
-                            item: child,
-                            priority: child.cost + (child.parent?.cost ?? 0),
-                        });
+        let f_max = this.ManhattanDistance(this.initial) + this.outOfPlace(this.initial);
+        for (let i = 0; i < 1_000_000; i++) {
+            const result = this.depthLimitedAyySearch(this.initial, f_max);
+            f_max = result.cost;
+            if (result.node != null) {
+                return result.node;
+            }
+        }
+        return null;
+    };
+    depthLimitedAyySearch = (problem, limit) => {
+        const start_node = new node_1.node(problem.state, null, null, 0, 0);
+        return {
+            node: this.recursiveAyyDLS(start_node, problem, limit),
+            cost: limit,
+        };
+    };
+    recursiveAyyDLS = (succ, problem, limit) => {
+        if (succ.state == this.goal.state || succ.cost > limit)
+            return succ;
+        else {
+            let successor = this.expand(succ);
+            let maximum = Infinity;
+            for (let i = 0; i < successor.length; i++) {
+                let child = this.recursiveAyyDLS(successor[i], problem, limit);
+                if (child) {
+                    if (child.cost < maximum) {
+                        maximum = child.cost;
                     }
+                    if (child.state == this.goal.state)
+                        return child;
                 }
             }
         }
-        console.error("No solution was found");
-        return null;
+        throw new Error("Failure during iterative deepening a*");
     };
     expand = (node) => {
         let valid_moves = this.getValidMoves(node.state);
@@ -132,4 +139,4 @@ class AyyStar {
         return sum;
     }
 }
-exports.AyyStar = AyyStar;
+exports.IterAyyStar = IterAyyStar;

@@ -19,20 +19,24 @@ export class AyyStar {
     const start_node = new node(this.initial.state, null, null, 0, 0);
 
     let frontier: PriorityQueue = new PriorityQueue();
-    frontier.enqueue({ item: start_node, priority: start_node.cost });
-    let reached: node[] = [];
-    reached.push(start_node);
+    frontier.heapPush({ item: start_node, priority: start_node.cost }); // min-heap is faster than searching the entire array for a place to insert into
+    let reached: string[] = []; // Only keep track of the node states
+    reached.push(start_node.state);
     while (!frontier.empty()) {
-      let nodes = frontier.dequeue();
+      let nodes = frontier.heapPop();
       if (nodes?.item != null) {
-        if (nodes.item.state == this.goal.state) return nodes.item;
+        if (nodes.item.state == this.goal.state) {
+          // console.log("Total items in reached", reached.length);
+          return nodes.item;
+        }
 
         let children = this.expand(nodes.item);
         for (let i = 0; i < children.length; i++) {
           let child = children[i];
 
           // Check if the child node already exists in the reached list
-          let in_reached = reached.some((r) => r.state === child.state);
+          //let in_reached = reached.some((r) => r.state === child.state);
+          let in_reached = reached.includes(child.state); // Tons faster than filtering an array of objects
 
           // Sum the cost of each node
           //let reach_cost = reached.filter((n) => n.state === child.state);
@@ -40,8 +44,8 @@ export class AyyStar {
 
           // If the node is not in reached explore
           if (!in_reached) {
-            reached.push(child);
-            frontier.enqueue({
+            reached.push(child.state);
+            frontier.heapPush({
               item: child,
               priority: child.cost + (child.parent?.cost ?? 0),
             });
