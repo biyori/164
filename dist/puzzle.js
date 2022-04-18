@@ -40,6 +40,43 @@ const initialState_4x4 = [
     { state: "EAB480FC19D56237" },
     { state: "7DB13C52F46E80A9" },
 ];
+let test_moves = new moves_1.moves(null);
+const test_cases = [
+    {
+        state: "287135640",
+        solution: "uldrullurrddluruldldrurulddlururdllurrddlurdlluurrdlurddluuldrurddlluurrdldrululdrdruullddrruulldrrd",
+    },
+    {
+        state: "316207548",
+        solution: "ldrurdllururdlldruulddrruuldrdluldrurdluurdlldrruulldrrullddruulddruurddluulddrruuldlurrddlluurdldrr",
+    },
+    {
+        state: "140673285",
+        solution: "ldldrruullddrruullddrrulldruldruurdlldrruullddrruulldrrulddluurdrdluldrrulldrulurrddluulddrruldlurrd",
+    },
+    {
+        state: "134507628",
+        solution: "rdluuldrurddlluurdruldlurrddluldruuldrrdllurdlurrdlurdlluruldrurddlulurrdldlurdrullurdldrurdlurulddr",
+    },
+    {
+        state: "178402635",
+        solution: "uldrulddrrulurdluldrdlurdrullurdrdlluurdldrrululdrdlurdruulldrdruuldrdlluurrddllurrdluldruurdllurddr",
+    },
+    {
+        state: "837256410",
+        solution: "ulurdlldrruulldrurdldlurrulddruuldlurrddlurulldrruldlurrdldruuldrdllurrdlulurrdllurrddluruldldrruldr",
+    },
+    {
+        state: "360125748",
+        solution: "ddlluurdlurddlurdluurrddlulurrddluldrruldluurrdldruullddrurdlulurdldruurdldlurrdlluurrddluldrulurrdd",
+    },
+];
+let testing = test_cases.length;
+for (let i = 0; i < testing; i++) {
+    let test = test_moves.applyMoves(test_cases[i], 3);
+    console.assert(test === goalState_3x3.state);
+}
+console.log("Solving puzzles");
 let bench = new benchmark_1.benchmark();
 bench.start();
 for (let i = 0; i < initialState_3x3.length; i++) {
@@ -48,7 +85,7 @@ for (let i = 0; i < initialState_3x3.length; i++) {
     let mv = new moves_1.moves(result);
     console.log(`[${i + 1}/${initialState_3x3.length}] Solution for [${initialState_3x3[i].state}] => ${mv.getMoves()}`);
 }
-console.log("Benchmark: ", bench.stop());
+console.log("Benchmark: ", bench.stop(), "ms");
 if (SOLVE_PUZZLE_DIMENSION > 3) {
     for (let i = 0; i < initialState_4x4.length; i++) {
         let ayy = new ayy_star_1.AyyStar(initialState_4x4[i], goalState4x4, 4, false);

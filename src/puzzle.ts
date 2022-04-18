@@ -1,23 +1,7 @@
-import { state } from "./lib/search";
+import { state, test_state } from "./lib/search";
 import { AyyStar } from "./lib/ayy-star";
 import { moves } from "./lib/moves";
 import { benchmark } from "./lib/benchmark";
-
-/*
-  Iterative Deepening A* w/ Out-Of-Place, and Manhattan Distance Heuristics
-
-  Develop search code with requirements:
-
-  Input puzzle as a two strings, initial state and goal state.
-  Produce the solution as a string of "udlr" representing the move "up", "down", "left", and "right" for the movement of the blank.
-  Produce the number of expanded nodes required to find solution.
-
-  In addition, develop code to test a solution with requirements:
-
-  Input initial puzzle state as string.
-  Input move sequence as string.
-  Produce output state from applying move sequence to initial state.
-*/
 
 // Tested only for 3x3 and 4x4 puzzles
 // 3x3 = 8 piece
@@ -70,6 +54,57 @@ const initialState_4x4: state[] = [
   { state: "EAB480FC19D56237" }, //
   { state: "7DB13C52F46E80A9" }, //
 ];
+
+// Run some tests
+let test_moves = new moves(null);
+// Test cases
+const test_cases: test_state[] = [
+  {
+    state: "287135640",
+    solution:
+      "uldrullurrddluruldldrurulddlururdllurrddlurdlluurrdlurddluuldrurddlluurrdldrululdrdruullddrruulldrrd",
+  },
+  {
+    state: "316207548",
+    solution:
+      "ldrurdllururdlldruulddrruuldrdluldrurdluurdlldrruulldrrullddruulddruurddluulddrruuldlurrddlluurdldrr",
+  },
+  {
+    state: "140673285",
+    solution:
+      "ldldrruullddrruullddrrulldruldruurdlldrruullddrruulldrrulddluurdrdluldrrulldrulurrddluulddrruldlurrd",
+  },
+  {
+    state: "134507628",
+    solution:
+      "rdluuldrurddlluurdruldlurrddluldruuldrrdllurdlurrdlurdlluruldrurddlulurrdldlurdrullurdldrurdlurulddr",
+  },
+  {
+    state: "178402635",
+    solution:
+      "uldrulddrrulurdluldrdlurdrullurdrdlluurdldrrululdrdlurdruulldrdruuldrdlluurrddllurrdluldruurdllurddr",
+  },
+  {
+    state: "837256410",
+    solution:
+      "ulurdlldrruulldrurdldlurrulddruuldlurrddlurulldrruldlurrdldruuldrdllurrdlulurrdllurrddluruldldrruldr",
+  },
+  {
+    state: "360125748",
+    solution:
+      "ddlluurdlurddlurdluurrddlulurrddluldrruldluurrdldruullddrurdlulurdldruurdldlurrdlluurrddluldrulurrdd",
+  },
+];
+
+// Test all cases
+let testing = test_cases.length;
+for (let i = 0; i < testing; i++) {
+  let test = test_moves.applyMoves(test_cases[i], 3);
+  console.assert(test === goalState_3x3.state);
+}
+
+console.log("Solving puzzles");
+
 let bench = new benchmark();
 bench.start();
 // Solve the 3x3 puzzle states
@@ -83,7 +118,7 @@ for (let i = 0; i < initialState_3x3.length; i++) {
     }] => ${mv.getMoves()}`
   );
 }
-console.log("Benchmark: ", bench.stop());
+console.log("Benchmark: ", bench.stop(), "ms");
 
 // Solve the 4x4 puzzle states
 if (SOLVE_PUZZLE_DIMENSION > 3) {

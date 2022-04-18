@@ -1,7 +1,10 @@
 import { node } from "./node";
 import { moves, state } from "./search";
 
-// Iterative-Deepening Depth-First Search
+// Iterative-Deepening A* Search
+// https://en.wikipedia.org/wiki/Iterative_deepening_A*#Pseudocode
+// https://kicat.net/i/WRVNnxQUF5.png | https://kicat.net/i/YaAmJgikpV.png
+
 export class IterAyyStar {
   initial: state;
   goal: state;
@@ -17,48 +20,45 @@ export class IterAyyStar {
   search = (): node | null => {
     let f_max =
       this.ManhattanDistance(this.initial) + this.outOfPlace(this.initial);
+    const start_node = new node(this.initial.state, null, null, 0, 0);
     for (let i = 0; i < 1_000_000; i++) {
-      const result = this.depthLimitedAyySearch(this.initial, f_max);
-      f_max = result.cost; // update threshold
-      if (result.node != null) {
-        return result.node;
-      }
+      const result = this.recursiveAyyDLS(start_node, this.initial, f_max);
+      if (result instanceof node) return result;
+      else f_max = result; // update threshold
       //  console.log("round ", i);
     }
-    return null;
+    throw new Error("Failure during iterative deepening a*");
   };
 
-  depthLimitedAyySearch = (problem: state, limit: number): iterNode => {
-    const start_node = new node(problem.state, null, null, 0, 0);
-    return {
-      node: this.recursiveAyyDLS(start_node, problem, limit),
-      cost: limit,
-    };
-  };
-
+  /**
+   * Recursive helper for iterative deepening A*
+   * @param succ child nodes to keep track of moves
+   * @param problem state
+   * @param limit threshold
+   * @returns node, number, or null
+   */
   private recursiveAyyDLS = (
     succ: node,
     problem: state,
-    limit: number
-  ): node | null => {
-    if (succ.state == this.goal.state || succ.cost > limit) return succ;
-    else {
-      let successor = this.expand(succ);
-      let maximum: number = Infinity;
-      //  let result: node | null = null;
-      for (let i = 0; i < successor.length; i++) {
-        let child = this.recursiveAyyDLS(successor[i], problem, limit);
-        if (child) {
-          if (child.cost < maximum) {
-            maximum = child.cost;
-            //  result = child;
-            // console.log("UPDATING");
-          }
-          if (child.state == this.goal.state) return child;
-        }
-      }
+    threshold: number
+  ): node | number => {
+    let f_max =
+      this.ManhattanDistance({ state: succ.state }) +
+      this.outOfPlace({ state: succ.state });
+    console.log(f_max);
+    if (f_max > threshold) return f_max;
+    if (succ.state == this.goal.state) return succ;
+
+    let successor = this.expand(succ);
+    let maximum: number = Infinity;
+    //  let result: node | null = null;
+
+    for (let i = 0; i < successor.length; i++) {
+      let child = this.recursiveAyyDLS(successor[i], problem, threshold);
+      if (child instanceof node) return child;
+      if (child < maximum) maximum = child;
     }
-    throw new Error("Failure during iterative deepening a*");
+    return maximum;
   };
 
   expand = (node: node): node[] => {
@@ -185,4 +185,5 @@ export class IterAyyStar {
 export interface iterNode {
   node: node | null;
   cost: number;
+  solution: boolean;
 }

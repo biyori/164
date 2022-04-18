@@ -15,40 +15,34 @@ class IterAyyStar {
     }
     search = () => {
         let f_max = this.ManhattanDistance(this.initial) + this.outOfPlace(this.initial);
+        const start_node = new node_1.node(this.initial.state, null, null, 0, 0);
         for (let i = 0; i < 1_000_000; i++) {
-            const result = this.depthLimitedAyySearch(this.initial, f_max);
-            f_max = result.cost;
-            if (result.node != null) {
-                return result.node;
-            }
-        }
-        return null;
-    };
-    depthLimitedAyySearch = (problem, limit) => {
-        const start_node = new node_1.node(problem.state, null, null, 0, 0);
-        return {
-            node: this.recursiveAyyDLS(start_node, problem, limit),
-            cost: limit,
-        };
-    };
-    recursiveAyyDLS = (succ, problem, limit) => {
-        if (succ.state == this.goal.state || succ.cost > limit)
-            return succ;
-        else {
-            let successor = this.expand(succ);
-            let maximum = Infinity;
-            for (let i = 0; i < successor.length; i++) {
-                let child = this.recursiveAyyDLS(successor[i], problem, limit);
-                if (child) {
-                    if (child.cost < maximum) {
-                        maximum = child.cost;
-                    }
-                    if (child.state == this.goal.state)
-                        return child;
-                }
-            }
+            const result = this.recursiveAyyDLS(start_node, this.initial, f_max);
+            if (result instanceof node_1.node)
+                return result;
+            else
+                f_max = result;
         }
         throw new Error("Failure during iterative deepening a*");
+    };
+    recursiveAyyDLS = (succ, problem, threshold) => {
+        let f_max = this.ManhattanDistance({ state: succ.state }) +
+            this.outOfPlace({ state: succ.state });
+        console.log(f_max);
+        if (f_max > threshold)
+            return f_max;
+        if (succ.state == this.goal.state)
+            return succ;
+        let successor = this.expand(succ);
+        let maximum = Infinity;
+        for (let i = 0; i < successor.length; i++) {
+            let child = this.recursiveAyyDLS(successor[i], problem, threshold);
+            if (child instanceof node_1.node)
+                return child;
+            if (child < maximum)
+                maximum = child;
+        }
+        return maximum;
     };
     expand = (node) => {
         let valid_moves = this.getValidMoves(node.state);
