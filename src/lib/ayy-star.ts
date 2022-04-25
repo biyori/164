@@ -17,16 +17,22 @@ export class AyyStar {
 
   search = (): node | null => {
     const start_node = new node(this.initial.state, null, null, 0, 0);
-
+    let expanded = 0;
     let frontier: PriorityQueue = new PriorityQueue();
     frontier.heapPush({ item: start_node, priority: start_node.cost }); // min-heap is faster than searching the entire array for a place to insert into
     let reached: string[] = []; // Only keep track of the node states
     reached.push(start_node.state);
     while (!frontier.empty()) {
+      expanded++;
       let nodes = frontier.heapPop();
       if (nodes?.item != null) {
         if (nodes.item.state == this.goal.state) {
-          // console.log("Total items in reached", reached.length);
+          console.log(
+            "Total items in reached",
+            reached.length,
+            "Expanded",
+            expanded
+          );
           return nodes.item;
         }
 

@@ -16,14 +16,17 @@ class AyyStar {
     }
     search = () => {
         const start_node = new node_1.node(this.initial.state, null, null, 0, 0);
+        let expanded = 0;
         let frontier = new priority_queue_1.PriorityQueue();
         frontier.heapPush({ item: start_node, priority: start_node.cost });
         let reached = [];
         reached.push(start_node.state);
         while (!frontier.empty()) {
+            expanded++;
             let nodes = frontier.heapPop();
             if (nodes?.item != null) {
                 if (nodes.item.state == this.goal.state) {
+                    console.log("Total items in reached", reached.length, "Expanded", expanded);
                     return nodes.item;
                 }
                 let children = this.expand(nodes.item);
