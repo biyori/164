@@ -100,7 +100,7 @@ class AyyStar {
                     console.log("Out of place tiles:", outOfPlaceTiles);
                     console.log("Manhattan distance", manhattanDistance);
                 }
-                let child = new node_1.node(state_copy.join(""), front_node, moves[i].move, front_node.depth + 1, front_node.cost + outOfPlaceTiles + manhattanDistance);
+                let child = new node_1.node(state_copy.join(""), front_node, moves[i].move, front_node.depth + 1, front_node.cost + manhattanDistance);
                 new_states.push(child);
             }
         }

@@ -2,7 +2,7 @@ import { node } from "./node";
 import { PriorityQueue } from "./priority-queue";
 import { moves, state } from "./search";
 
-// Breadth-First Search
+// A* Search
 export class AyyStar {
   initial: state;
   goal: state;
@@ -128,7 +128,7 @@ export class AyyStar {
           front_node,
           moves[i].move,
           front_node.depth + 1,
-          front_node.cost + outOfPlaceTiles + manhattanDistance // Add weight to the priority queue
+          front_node.cost + manhattanDistance // Add weight to the priority queue
         );
         new_states.push(child);
       }
