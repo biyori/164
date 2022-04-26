@@ -88,9 +88,11 @@ for (let i = 0; i < initialState_3x3.length; i++) {
 console.log("Benchmark: ", bench.stop(), "ms");
 if (SOLVE_PUZZLE_DIMENSION > 3) {
     for (let i = 0; i < initialState_4x4.length; i++) {
+        bench.start();
         let ayy = new ayy_star_1.AyyStar(initialState_4x4[i], goalState4x4, 4, false);
         let result = ayy.search();
         let mv = new moves_1.moves(result);
         console.log(`[${i + 1}/${initialState_4x4.length}] Solution for [${initialState_4x4[i].state}] => ${mv.getMoves()}`);
+        console.log("Benchmark: ", bench.stop(), "ms");
     }
 }

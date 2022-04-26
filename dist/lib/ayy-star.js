@@ -52,8 +52,8 @@ class AyyStar {
         return newStates;
     };
     getValidMoves(state) {
-        let state_arr = [...state];
-        const zeroTileIndex = state_arr.findIndex((str) => str === "0");
+        let state_arr = state.split("");
+        const zeroTileIndex = state_arr.indexOf("0");
         let valid_move_index = [];
         if (this.debug)
             console.log("Testing up");
@@ -82,22 +82,20 @@ class AyyStar {
     getNewStates(front_node, moves) {
         const total_moves = moves.length;
         let new_states = [];
-        let state_arr = [...front_node.state];
-        const zeroTileIndex = state_arr.findIndex((str) => str === "0");
+        let state_arr = front_node.state.split("");
+        const zeroTileIndex = state_arr.indexOf("0");
         if (total_moves > 0) {
             for (let i = 0; i < total_moves; i++) {
                 let state_copy = state_arr.slice();
                 let tileToMove = state_copy[moves[i].index];
                 state_copy[zeroTileIndex] = tileToMove;
                 state_copy[moves[i].index] = "0";
-                let outOfPlaceTiles = this.outOfPlace({ state: state_copy.join("") });
                 let manhattanDistance = this.ManhattanDistance({
                     state: state_copy.join(""),
                 });
                 if (this.debug) {
                     console.log(state_copy);
                     console.log(state_copy.join(""), "[Depth]", front_node.depth);
-                    console.log("Out of place tiles:", outOfPlaceTiles);
                     console.log("Manhattan distance", manhattanDistance);
                 }
                 let child = new node_1.node(state_copy.join(""), front_node, moves[i].move, front_node.depth + 1, front_node.cost + manhattanDistance);

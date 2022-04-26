@@ -56,7 +56,8 @@ export class DFS {
 
   getValidMoves(state: string): moves[] {
     let state_arr = [...state];
-    const zeroTileIndex = state_arr.findIndex((str) => str === "0");
+    //const zeroTileIndex = state_arr.findIndex((str) => str === "0");
+    const zeroTileIndex = state_arr.indexOf("0"); // Faster than FindIndex
     let valid_move_index: moves[] = [];
 
     if (this.debug) console.log("Testing up");
@@ -89,7 +90,8 @@ export class DFS {
     const total_moves = moves.length;
     let new_states: node[] = [];
     let state_arr = [...front_node.state]; // convert string to array
-    const zeroTileIndex = state_arr.findIndex((str) => str === "0"); // calculate 0 tile again for swapping
+    console.log(state_arr);
+    const zeroTileIndex = state_arr.indexOf("0"); // calculate 0 tile again for swapping
     if (total_moves > 0) {
       for (let i = 0; i < total_moves; i++) {
         let state_copy = state_arr.slice(); // copy the state

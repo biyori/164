@@ -43,6 +43,7 @@ export class AyyStar {
           // Check if the child node already exists in the reached list
           //let in_reached = reached.some((r) => r.state === child.state);
           let in_reached = reached.includes(child.state); // Tons faster than filtering an array of objects
+          //let in_reached = reached.indexOf(child.state) != -1;
 
           // Sum the cost of each node
           //let reach_cost = reached.filter((n) => n.state === child.state);
@@ -70,8 +71,10 @@ export class AyyStar {
   };
 
   getValidMoves(state: string): moves[] {
-    let state_arr = [...state];
-    const zeroTileIndex = state_arr.findIndex((str) => str === "0");
+    //let state_arr = [...state];
+    let state_arr = state.split("");
+    //const zeroTileIndex = state_arr.findIndex((str) => str === "0");
+    const zeroTileIndex = state_arr.indexOf("0"); // Faster than FindIndex
     let valid_move_index: moves[] = [];
 
     if (this.debug) console.log("Testing up");
@@ -103,8 +106,9 @@ export class AyyStar {
   getNewStates(front_node: node, moves: moves[]): node[] {
     const total_moves = moves.length;
     let new_states: node[] = [];
-    let state_arr = [...front_node.state]; // convert string to array
-    const zeroTileIndex = state_arr.findIndex((str) => str === "0"); // calculate 0 tile again for swapping
+    let state_arr = front_node.state.split(""); //[...front_node.state]; // convert string to array
+
+    const zeroTileIndex = state_arr.indexOf("0"); // calculate 0 tile again for swapping
     if (total_moves > 0) {
       for (let i = 0; i < total_moves; i++) {
         let state_copy = state_arr.slice(); // copy the state
@@ -113,14 +117,14 @@ export class AyyStar {
         state_copy[zeroTileIndex] = tileToMove;
         state_copy[moves[i].index] = "0";
 
-        let outOfPlaceTiles = this.outOfPlace({ state: state_copy.join("") });
+        // let outOfPlaceTiles = this.outOfPlace({ state: state_copy.join("") });
         let manhattanDistance = this.ManhattanDistance({
           state: state_copy.join(""),
         });
         if (this.debug) {
           console.log(state_copy);
           console.log(state_copy.join(""), "[Depth]", front_node.depth);
-          console.log("Out of place tiles:", outOfPlaceTiles);
+          // console.log("Out of place tiles:", outOfPlaceTiles);
           console.log("Manhattan distance", manhattanDistance);
         }
         let child = new node(
@@ -128,7 +132,7 @@ export class AyyStar {
           front_node,
           moves[i].move,
           front_node.depth + 1,
-          front_node.cost + manhattanDistance // Add weight to the priority queue
+          front_node.cost + manhattanDistance //+ outOfPlaceTiles// Add weight to the priority queue
         );
         new_states.push(child);
       }

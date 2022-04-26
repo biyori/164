@@ -123,6 +123,7 @@ console.log("Benchmark: ", bench.stop(), "ms");
 // Solve the 4x4 puzzle states
 if (SOLVE_PUZZLE_DIMENSION > 3) {
   for (let i = 0; i < initialState_4x4.length; i++) {
+    bench.start(); // Time each hard puzzle individually
     let ayy = new AyyStar(initialState_4x4[i], goalState4x4, 4, false);
     let result = ayy.search();
     let mv = new moves(result);
@@ -131,5 +132,6 @@ if (SOLVE_PUZZLE_DIMENSION > 3) {
         initialState_4x4[i].state
       }] => ${mv.getMoves()}`
     );
+    console.log("Benchmark: ", bench.stop(), "ms");
   }
 }

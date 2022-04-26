@@ -49,7 +49,7 @@ class DFS {
     };
     getValidMoves(state) {
         let state_arr = [...state];
-        const zeroTileIndex = state_arr.findIndex((str) => str === "0");
+        const zeroTileIndex = state_arr.indexOf("0");
         let valid_move_index = [];
         if (this.debug)
             console.log("Testing up");
@@ -79,7 +79,8 @@ class DFS {
         const total_moves = moves.length;
         let new_states = [];
         let state_arr = [...front_node.state];
-        const zeroTileIndex = state_arr.findIndex((str) => str === "0");
+        console.log(state_arr);
+        const zeroTileIndex = state_arr.indexOf("0");
         if (total_moves > 0) {
             for (let i = 0; i < total_moves; i++) {
                 let state_copy = state_arr.slice();
